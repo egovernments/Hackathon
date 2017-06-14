@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col s12">
+        <div class="row">
+            <div class="col s12">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col s12">
+                                <h5>Nature of Complaints by Demographics</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col m8 offset-m2">
+                                <select class="browser-default" ng-model="caseOne.selectedType" ng-change="setValue(caseOne.selectedType)" ng-options="type.name for type in types">
+                                    <option value="" title="Select Compaints Type" selected disabled>Select your Complaint</option>
+                                </select>
+                            </div>
+                        </div>
+                        <canvas id="line" class="chart chart-line" chart-data="caseOne.chartData" chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride" chart-click="onClick">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

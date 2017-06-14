@@ -1,0 +1,489 @@
+
+	function init(feature){
+		feature = feature || undefined;
+
+		var layer = new L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: '&copy;2012 Esri & Stamen, Data from OSM and Natural Earth',
+			minZoom: 2,
+			maxZoom: 18
+		});
+
+		var map = L.map("map", {
+			maxZoom: 18
+		});
+		//var layer = new L.StamenTileLayer("toner-lite");
+
+		map.addLayer(layer);
+
+		map.data = {};
+		map.layers = {};
+
+		if (feature === undefined){
+		var point = [12.972892, 77.590598];
+
+		//init to bangalore
+		//map.setView(point, 12);
+
+		L.easyButton('fa-compass',function(){ map.locate({setView: true})}).addTo(map);
+
+		map.locate({setView: true, maxZoom: 16});
+		map.on('locationfound', onLocationFound);
+
+
+
+		}
+		else{
+			//if the map is initialized from a feature search
+
+			var geoj = L.geoJson(feature, {
+					style: function (feat) {
+					return {color: '#00B7FF'};
+				},
+				pointToLayer: function(feat, latlng){
+					return new L.CircleMarker(latlng, {
+						radius: 10,
+						fillColor: "#00B7FF",
+						color: "#000",
+						weight: 1,
+						opacity: 1,
+						fillOpacity: 0.4
+					});
+				},
+				onEachFeature: function (feat, layer) {
+					layer.bindPopup(feat.properties.name);
+				}
+			});
+			geoj.addTo(map);
+
+			map.fitBounds(geoj.getBounds()).setZoom(13);
+		}
+
+
+		return map
+	}
+
+	function onLocationFound(e) {
+		var radius = e.accuracy / 2;
+
+		L.marker(e.latlng).addTo(map)
+			.bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+		L.circle(e.latlng, radius).addTo(map);
+	}
+
+	function locateUser() {
+		this.map.locate({setView : true});
+	}
+
+	function reqFromDBinBounds(areaType, cb){
+		//var bbox = map.getBounds().toBBoxString();
+		$.ajax({
+			type: 'GET',
+			url: '/data/'+areaType//+'/bounds/'+bbox
+		}).done(function(result) {
+			cb(result);
+		});
+	}
+
+	function reqCrimes(crimeType, cb){
+		$.ajax({
+			type: 'GET',
+			url: '/data/crime/'+crimeType//+'/bounds/'+bbox
+		}).done(function(result) {
+			cb(result);
+		});
+	}
+
+
+	function addFeatureLayer(layer){
+		if (layer.length == 6){
+			if(layer != 'Crime1' && map.hasLayer(map.layers['Crime1'])){
+				map.removeLayer(map.layers['Crime1'])
+			}
+			if(layer != 'Crime2' && map.hasLayer(map.layers['Crime2'])){
+				map.removeLayer(map.layers['Crime2'])
+			}
+			if(layer != 'Crime3' && map.hasLayer(map.layers['Crime3'])){
+				map.removeLayer(map.layers['Crime3'])
+			}
+			if(layer != 'Crime4' && map.hasLayer(map.layers['Crime4'])){
+				map.removeLayer(map.layers['Crime4'])
+			}
+			if(layer != 'Crime5' && map.hasLayer(map.layers['Crime5'])){
+				map.removeLayer(map.layers['Crime5'])
+			}
+			if(layer != 'Crime6' && map.hasLayer(map.layers['Crime6'])){
+				map.removeLayer(map.layers['Crime6'])
+			}
+		}
+		if (Object.keys(map.layers).indexOf((layer)) == -1){
+			layerButton(layer);
+		}
+		else{
+			map.addLayer(map.layers[layer])
+		}
+	}
+
+	function removeFeatureLayer(layer){
+
+		if (Object.keys(map.layers).indexOf((layer)) != -1){
+			map.removeLayer(map.layers[layer])
+		}
+
+	}
+	function crimeLoad(buttonName, callback) {
+		reqCrimes(buttonName, function (feature) {
+		map.layers[buttonName] = new L.markerClusterGroup({
+			disableClusteringAtZoom: 14,
+			spiderfyOnMaxZoom: true,
+			showCoverageOnHover: false,
+			zoomToBoundsOnClick: true,
+			iconCreateFunction: function (cluster) {
+				return new L.DivIcon({
+					html: '<div class="uk-badge uk-badge-notification" style="position:absolute; background-color: darkpurple">' + cluster.getChildCount() + '</div>',
+					className: 'aptIcon'
+				});
+			}
+		});
+
+		feature.features = feature.features.map(function (x) {
+			var y = x;
+			y.geometry = JSON.parse(y.geometry);
+			return y
+		});
+
+			map.data[buttonName] = feature;
+
+			L.geoJson(feature, {
+				style: function (feat) {
+					return {
+						color: '#303030',
+						weight: 1
+					}
+				},
+				pointToLayer: function (feat, latlng) {
+					//return new L.marker(latlng, {icon: L.divIcon({className: 'aptIcon'}) } );
+					if (buttonName.length == 6) {
+						return new L.marker(latlng, {icon: crimeIcon});
+					}
+
+				},
+
+			onEachFeature: function (feat, layer) {
+				layer.properties = feat.properties || layer.properties;
+					}
+			}).addTo(map.layers[buttonName]);
+			callback(map.layers[buttonName]);
+
+		});
+	}
+	function layerLoad(buttonName, callback){
+		reqFromDBinBounds(buttonName, function(feature) {
+
+			if (buttonName.length == 4){
+				//checks if name length is shorter, eg sro/ward/dro
+				map.layers[buttonName] = new L.featureGroup();
+			}else{
+				map.layers[buttonName] = new L.markerClusterGroup({ disableClusteringAtZoom: 14, spiderfyOnMaxZoom: true, showCoverageOnHover: false, zoomToBoundsOnClick: true, iconCreateFunction: function(cluster) { return new L.DivIcon({ html: '<div class="uk-badge uk-badge-notification" style="position:absolute; background-color: darkpurple">' + cluster.getChildCount() + '</div>', className: 'aptIcon'}); } });
+			}
+
+			//amenities: add custom icon for amenities, add popup with name
+			feature.features = feature.features.map(function(x){var y = x; y.geometry = JSON.parse(y.geometry); return y });
+
+			map.data[buttonName] = feature;
+
+			L.geoJson(feature, {
+				style: function (feat) {
+					return {
+						color: '#303030',
+						weight: 1
+					}
+				},
+				pointToLayer: function(feat, latlng){
+					//return new L.marker(latlng, {icon: L.divIcon({className: 'aptIcon'}) } );
+					if(buttonName.length == 6){
+						return new L.marker(latlng, {icon: crimeIcon});
+					}
+
+				},
+
+				onEachFeature: function (feat, layer) {
+
+					layer.properties = feat.properties || layer.properties;
+
+					if (buttonName.length == 4 ){
+						//only add these listeners for polygon layers
+						if (buttonName.length == 4){
+							layer.on({
+								mouseover: highlightFeature,
+								mouseout: resetHighlight,
+							});
+						}
+
+						//bind vals
+						layer.bindPopup(createPopup(feat.properties.name,true),customOptions);
+						//layer.bindPopup(layer.properties.name);
+
+					}
+				}
+			}).addTo(map.layers[buttonName]);
+
+				choroplethAll({
+					crime1: 'c1',
+					crime2: 'c2',
+					crime3: 'c3',
+					crime4: 'c4',
+					crime5: 'c5',
+					crime6: 'c6'
+				}[$(':checked.crime_type').attr('id')]);
+
+
+				callback(map.layers[buttonName]);
+		} );
+
+
+
+	}
+
+	function layerButton(buttonName){
+			if(buttonName.length == 4) {
+				layerLoad(buttonName, function (layer) {
+					layer.addTo(map);
+					map.fitBounds(layer.getBounds());
+				});
+			}
+			else
+			{
+				crimeLoad(buttonName, function (layer) {
+					layer.addTo(map);
+					map.fitBounds(layer.getBounds());
+
+				});
+			}
+
+	}
+
+
+
+	function highlightFeature(e) {
+		var layer = e.target;
+
+		layer.setStyle({
+			fillOpacity: 0.7
+		});
+
+		if (!L.Browser.ie && !L.Browser.opera) {
+			layer.bringToFront();
+		}
+	}
+
+	function resetHighlight(e) {
+		var layer = e.target;
+
+		layer.setStyle({
+			fillOpacity: 0.2
+		});
+	}
+
+	function resetHighlightNull(e) {
+		var layer = e.target;
+
+		layer.setStyle({
+			fillOpacity: 0
+		});
+	}
+
+	function maxMin(array, value){
+		var max = Math.max.apply(Math,array.features.map(function(o){return o.properties[value];}));
+		var min = Math.min.apply(Math,array.features.map(function(o){return o.properties[value];}));
+
+		return {min : min, max :max};
+}
+
+	function choroplethAll(value){
+		//use choropleth for all polygon layers if one is selected
+		//pass empty value parameter to reset
+
+		Object.keys(map.data).forEach(
+			function(a){
+				if (a.length < 5){
+					choropleth(a, value);
+				}
+			}
+		)
+	}
+
+	function choropleth(area,value){
+		(map.scale) ? map.scale = map.scale : map.scale = new chroma.scale(['white', 'purple']);
+		//pass empty 'value' parameter to reset
+		value = value || undefined;
+
+		var m = maxMin(map.data[area], value);
+
+		if (!map.legend){
+			if (value) map.legend = new L.control({position: 'bottomleft'})
+		}
+		else{
+			if (value){
+				if (map.legend){
+					//old div and Lcontrol object removed by removeControl
+					map.removeControl(map.legend);
+					map.legend = new L.control({position: 'bottomleft'})
+				}
+				else{
+					map.legend = new L.control({position: 'bottomleft'})
+				}
+			}
+			else{
+				map.removeControl(map.legend);
+			}
+		}
+
+		map.layers[area].eachLayer(function(d){
+
+			if (value !== undefined){
+				d.eachLayer(function(f){
+
+					if (f.properties[value] != null){
+						f.setStyle({fillColor: map.scale( (1-0)*(f.properties[value] - m.min)/(m.max-m.min) )});
+					}
+
+					else{
+						f.setStyle({
+							fillColor: '#303030',
+							weight: 1
+						});
+					}
+
+				});
+
+				//add new map legend
+				if (map.legend !== undefined){
+
+					map.legend.onAdd = function (map) {
+
+						var div = L.DomUtil.create('div', 'info legend choro'),
+							grades = [0.1, 0.3, 0.5, 0.7, 0.9],
+							labels = {
+								0.1: m.min,
+								0.3: m.max*0.3,
+								0.5: m.max *0.5,
+								0.7: m.max*0.7,
+								0.9: m.max*0.9};
+
+						// loop through & generate a label with a colored square for each interval
+						for (var i = 0; i < grades.length; i++) {
+							div.innerHTML +=
+								'<i style="background:' + map.scale(grades[i]) + '"></i> ' +
+								Math.ceil(labels[grades[i]]/1000)*1000 + (Math.ceil(labels[grades[i + 1]]/1000)*1000 ? '&ndash;' + Math.ceil(labels[grades[i + 1]]/1000)*1000 + '<br>' : '+');
+						}
+
+						return div;
+					};
+
+					map.legend.onRemove = function(map){
+						map.legend = undefined;
+					};
+
+					map.legend.addTo(map);
+
+				}
+
+
+			}else{
+				d.eachLayer(function(f){
+					f.setStyle({
+						fillColor: '#303030',
+						weight: 1
+					});
+				});
+			}
+
+	});
+
+
+	}
+
+	var crimeIcon = L.icon({
+		iconUrl: '/images/POINT_2.png',
+		iconSize: [60,60], // size of the icon
+		popupAnchor: [0,-15]
+	});
+
+	// create popup contents
+	var createPopup = function(name, disablePopOut){
+		var args = Array.prototype.slice.call(arguments);
+		var customPopup = [
+			'<p style="color:purple"> '+name+' </p>',
+			];
+
+			if (disablePopOut){
+				customPopup[4] = '';
+				customPopup[5] = '';
+				customPopup[6] = '';
+			}
+
+		return customPopup.join('');
+	};
+
+	// specify popup options
+	var customOptions =
+	{
+		'maxWidth': '500',
+		'className' : 'custom'
+	};
+
+	function filter() {
+
+		if (map.layers.Apartments){
+			var values = $( "#slider-range" ).slider( "option", "values" );
+			var filtered = new L.LayerGroup([map.layers.Apartments]);
+
+			var checked = {
+				guidance_value: 'gv',
+				market_value: 'mv',
+				registration_value: 'rv',
+				listing_value: 'lv'
+			}[$(':checked.property_values').attr('id')];
+
+			if (checked !== undefined){
+
+				map.layers.Apartments.clearLayers();
+
+				var filtered = {type: "FeatureCollection", features: []};
+
+				map.data.Apartments.features.forEach(function(a){
+					if (a.properties[checked] > values[0] && a.properties[checked] < values[1] ) {
+						filtered.features.push(a);
+					}
+				});
+
+				L.geoJson(filtered, {
+					style: function (feat) {
+						return {
+							color: '#303030',
+							weight: 1
+						}
+					},
+					pointToLayer: function (feat, latlng) {
+						//return new L.marker(latlng, {icon: L.divIcon({className: 'aptIcon'}) } );
+						return new L.marker(latlng, {icon: crimeIcon});
+					},
+					onEachFeature: function (feat, layer) {
+						layer.properties = feat.properties || layer.properties;
+
+						layer.bindPopup(createPopup(feat.properties.name,
+							feat.properties.mv,
+							feat.properties.gv,
+							feat.properties.rv,
+							feat.properties.lv), customOptions);
+
+					}
+				}).addTo(map.layers.Apartments);
+
+			}
+		}
+
+	}
+
+

@@ -1,0 +1,91 @@
+extends layout_signed
+block scripts
+   script(src="/javascripts/leaflet.js")
+   //script(src='/jquery-ui.js')
+   script(src='/javascripts/jquery-ui.js')
+   link(rel='stylesheet', href='/stylesheets/jquery-ui.min.css')
+   link(rel='stylesheet', href='/stylesheets/style.css')
+   link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
+   link(rel='stylesheet', href='https://domoritz.github.io/leaflet-locatecontrol/dist/L.Control.Locate.min.css')
+   script(src='https://domoritz.github.io/leaflet-locatecontrol/dist/L.Control.Locate.min.js', charset='utf-8')
+block scripts2
+   script(src='/javascripts/leaflet.markercluster.js')
+   script(src="/javascripts/chroma.min.js")
+   script(src="/javascripts/leaflet.awesome-markers.min.js")
+   script(src="/javascripts/easy_button.js")
+   link(rel="stylesheet", href='/stylesheets/easy_button.css')
+   link(rel='stylesheet', href='/stylesheets/leaflet.awesome-markers.css')
+   link(href='/stylesheets/MarkerCluster.css' rel='stylesheet')
+   link(rel='stylesheet', href='http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css')
+   script(src='http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js?2')
+   script(src="/javascripts/map.public.js")
+
+li(class="uk-navbar-nav"): a(href='javascript:popup("/sign")')
+block icon
+block username
+   li(class="uk-navbar-nav"): a(style="color:red", id="username")
+      b username
+block map
+    p
+        font(size=4, color="#ffad33") Enter a query
+    textarea#query.wmd-input.processed(name='queries', cols='100', rows='20', tabindex='101', data-min-length='', style="border-color:#ffad33")
+    br
+    br
+    br
+    div(id="button", style="float:bottom; padding-bottom:1cm; padding-right:1cm")
+        input#submit(class="btnpop",type='button', value='Submit', style='color:white; background-color:#ffad33')
+    br
+    br
+    //p
+        //font(size=4, color="#ffad33") Results
+    div(id="#message")
+    div(id="#results")
+    script.
+        document.addEventListener("DOMContentLoaded", function (event) {
+            var url = window.location.pathname.split("/")
+            var username = url[2];
+            var htmlstring = "<b>" + username + "</b>"
+            $("#username").html(htmlstring);
+
+
+        });
+        $(document).ready(function () {
+            $("#submit").click(function () {
+                query = $('#query').val();
+                $.post("http://localhost:3000/database/:user", {
+                    query: query
+                }, function (data) {
+                    var stringhtml = "<p> " + data.message + "</p";
+                    $("#message").html(stringhtml);
+                    var tabularheads = ['"<table style="   ',
+                        'width:100 % ">   ',
+                        '< tr >   '];
+                    for (var i = 0; i < data.field.length; i++) {
+                        var head = "<th>" + data.field[i].name + "</th>    ";
+                        tabularheads.push(head)
+                    }
+                    for (var i = 0; i < data.rows.length; i++) {
+                        var final = "<tr> "
+                        for (var j = 0; j < data.field.length; j++) {
+                            var a = data.field[j].name;
+                            var cell = "<td>" + data.rows[i][a] + "<\td>    ";
+                            final = final + cell;
+                        }
+                        final = final + "</tr>    ";
+                        tabularheads.push(final)
+                    }
+                    tabularheads.push("</table>    ");
+                    tabularheads.join(' ');
+                    $("#results").html(tabularheads);
+                        alert(data.message);
+                    if (data === 'done') {
+                        alert("passed");
+                    }
+                });
+            });
+        });
+
+
+
+
+

@@ -1,0 +1,31 @@
+{
+  "name": "nagariya",
+  "version": "1.0.0",
+  "description": "We are a one stop, intelligent portal for everything and anything that needs to be done to upbring the city you live in. ",
+  "main": "app.js",
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-route": "^1.5.8",
+    "angularfire": "^2.3.0",
+    "bootstrap": "^3.3.7",
+    "bootswatch": "^3.3.7",
+    "firebase": "^3.8.0",
+    "jquery": "^3.2.1",
+    "materialize-css": "^0.98.2",
+    "normalize.css": "^6.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/egovernments/t35-hackapr17.git"
+  },
+  "author": "im.amruth@gmail.com",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/egovernments/t35-hackapr17/issues"
+  },
+  "homepage": "https://github.com/egovernments/t35-hackapr17#readme"
+}

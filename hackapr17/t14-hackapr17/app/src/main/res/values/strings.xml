@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">EGov</string>
+    <string name="bottom_sheet_select_image_using_choose">Choose</string>
+    <string name="bottom_sheet_select_image_using_camera">Camera</string>
+    <string name="bottom_sheet_select_image_using_gallery">Gallery</string>
+    <string name="title_settings_button_setting">Settings</string>
+    <string name="title_settings_button_cancel">Cancel</string>
+    <string name="rationale_storage">This app requires permission to storage to store and retrieve pictures captured from camera.</string>
+    <string name="rationale_location">This app requires permission to access your current location.</string>
+    <string name="rationale_never_ask_storage">Looks like permission for storage has been permanently disabled. Go to Settings and turn it On.</string>
+    <string name="rationale_never_ask_location">Looks like permission for location has been permanently disabled. Go to Settings and turn it On.</string>
+    <string name="title_settings_dialog">Oops !!!</string>
+    <string name="internal_storage">Internal storage</string>
+</resources>

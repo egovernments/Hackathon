@@ -1,0 +1,405 @@
+extends layout
+
+block scripts
+
+	script(src="/javascripts/leaflet.js")
+	//script(src='/jquery-ui.js')
+	script(src='/javascripts/jquery-ui.js')
+
+	link(rel='stylesheet', href='/stylesheets/jquery-ui.min.css')
+	link(rel='stylesheet', href='/stylesheets/style.css')
+	link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
+	link(rel='stylesheet', href='https://domoritz.github.io/leaflet-locatecontrol/dist/L.Control.Locate.min.css')
+	script(src='https://domoritz.github.io/leaflet-locatecontrol/dist/L.Control.Locate.min.js', charset='utf-8')
+
+
+block scripts2
+	script(src='/javascripts/leaflet.markercluster.js')
+	script(src="/javascripts/chroma.min.js")
+	script(src="/javascripts/leaflet.awesome-markers.min.js")
+	script(src="/javascripts/easy_button.js")
+	link(rel="stylesheet", href='/stylesheets/easy_button.css')
+	link(rel='stylesheet', href='/stylesheets/leaflet.awesome-markers.css')
+	link(href='/stylesheets/MarkerCluster.css' rel='stylesheet')
+	link(rel='stylesheet', href='http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.css')
+	script(src='http://cdn.leafletjs.com/leaflet-0.7.1/leaflet.js?2')
+	script(src="/javascripts/map.public.js")
+
+
+
+
+block icon
+	li(class="uk-navbar-nav"): a(href='/')
+		b municipal
+
+block map
+	div(style="width=100%;background-color:#F2EFE9")
+		div(class="uk-grid uk-grid-small" id="themap" style="width=80%;float:left")
+			div(class="uk-width-4-4")
+				#map()
+
+		div(id="thecontrols" style="background-color:#F2EFE9;width=20%;float:left;position:relative")
+			p(style="color:#ffad33; padding-top:1.5cm; padding-left:1cm")
+				font(size=3) Complaint Type
+			div(class="thecrimetype" style="padding-top:0.5cm; padding-left:1cm")
+				div(id="thebuttons_row1")
+					input#check_box_1(type='checkbox'  class='check_box')
+					label(for='check_box_1') <img src="/images/shape.png" style="height:40px;width:40px;align:middle" alt="Crime1">
+					&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+					input#check_box_2(type='checkbox'  class='check_box')
+					label(for='check_box_2') <img src="/images/money.png" style="height:40px;width:40px;align:middle" alt="Crime2">
+					&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+					input#check_box_3(type='checkbox'  class='check_box')
+					label(for='check_box_3') <img src="/images/pt.png" style="height:40px;width:40px;align:middle" alt="Crime3">
+					&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+
+				div(id="thebuttons_row2" style="padding-top:1cm")
+					input#check_box_4(type='checkbox'  class='check_box')
+					label(for='check_box_4') <img src="/images/assault2.png" style="height:40px;width:40px;align:middle" alt="Crime4">
+					&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+					input#check_box_5(type='checkbox'  class='check_box')
+					label(for='check_box_5') <img src="/images/harm.png" style="height:40px;width:40px;align;middle" alt="Crime5">
+					&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+					input#check_box_6(type='checkbox'  class='check_box')
+					label(for='check_box_6') <img src="/images/transport.png" style="height:40px;width:40px;align:middle" alt="Crime6">
+					&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+			div(id="filters")
+				div(id="timeday", style="padding-top:1cm;")
+					p(style="color:#ffad33; padding-left:1cm; padding-right:1cm; width=40%; float:left; position:relative")
+						font(size=3) Length of Time
+					select(id="timeofday", name='list1', style="width:40%; float:left; position:relative")
+						option(value='All Day') One day
+						option(value='Morning') Two days
+						option(value='Afternoon') Week
+						option(value='Evening') Month
+						option(value='Night') More than a month
+				div(id="timeper", style="padding-top:1cm;")
+					p(style="color:#ffad33; padding-left:1cm; padding-right:1cm; width=40%; float:left; position:relative")
+						font(size=3) Time Period
+					select(id="timeperiod", name='list2', style="width:40%; float:left; position:relative")
+						option(value='All Time') All Time
+						option(value='Today') Today
+						option(value='Last Week') Last Week
+						option(value='Last Month') Last Month
+						option(value='Last Year') Last Year
+				div(id="formalinformal" style="color:#ffad33; padding-top:2cm; padding-left:1cm")
+					input#check_box_7(type='checkbox'  class='formal_informal' checked="checked" )
+					span Resolved
+					&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+					input#check_box_8(type='checkbox'  class='formal_informal')
+					span Unresolved
+			div(id="recordcrime" style="padding-left:2cm; padding-top:2cm;padding-bottom:80%;" )
+
+	style.
+		.ui-button{
+			height: 50px;
+			width: 51px;
+		}
+	script.
+
+		function popup(mylink, windowname) {
+			if (!window.focus)return true;
+			if(mylink == '/record')
+			{
+				var geom = map.location;
+				href = mylink + '/' + geom.lat + "/" + geom.lng
+				window.open(href, windowname, 'width=680,height=700,left=450,top=200,resizable=yes,location=no,')
+			}
+			else
+			{
+				window.open(mylink, windowname, 'width=680,height=700,left=450,top=200,resizable=yes,location=no,');
+			}
+			return false;
+		}
+
+
+		document.addEventListener("DOMContentLoaded", function (event) {
+			//do work
+			map = init(!{attributes});
+
+			//L.easyButton('fa-compass',function(){ map.locate({setView: true})}).addTo(map);
+			layerLoad('Ward', function(layer){/*do nothing*/}); //load ward early
+			addFeatureLayer("Ward");
+			map.on('zoomend', function () {
+				if (map.getZoom() > 13 && map.getZoom() < 15 && map.hasLayer(map.layers['Ward'])) {
+					$("#ward_info").show();
+					map.closePopup();
+				}
+				if (map.getZoom() <= 13 || map.getZoom() >= 15)
+				{
+					$("#ward_info").hide();
+				}
+			});
+			map.on('popupopen', function(evt) {
+				var currentPopup = evt.popup;
+				if (map.getZoom() > 13 && map.getZoom() < 15 && map.hasLayer(map.layers['Ward'])) {
+					//$("#ward_info").show();
+					//map.closePopup();
+				}
+
+				$('.close_popup').click(function(e){
+
+					if (currentPopup != null)currentPopup._source.closePopup();
+				});
+				$('.popout').click(function(e){
+					if (currentPopup != null)currentPopup._source.closePopup();
+
+					var htmlContent = e.target.parentElement.parentElement.children
+					//var.replace(/[^0-9\.]+/g, '');
+
+					//$('#box_pop').html(currentPopup.getContent())
+					var htmlL = htmlContent.length;
+					$('.box_pop_apt_no').html(htmlContent[3]);
+					$('#box_pop_gv').html(htmlContent[htmlL-6].innerHTML.replace(/[^0-9\.]+/g, ''));
+					$('#box_pop_mv').html(htmlContent[htmlL-5].innerHTML.replace(/[^0-9\.]+/g, ''));
+					$('#box_pop_lv').html(htmlContent[htmlL-4].innerHTML.replace(/[^0-9\.]+/g, ''));
+					$('#box_pop_rv').html(htmlContent[htmlL-3].innerHTML.replace(/[^0-9\.]+/g, ''));
+
+					$("#stack").show();
+					$("#box_pop").show();
+				});
+			});
+			$(window).on("resize", function () {
+			$("#map").height($(window).height() / 1.25).width($('#themap').width());
+			map.invalidateSize();
+			}).trigger("resize");
+
+			//UI functions
+
+			function isChecked() {
+				var checked = {
+					check_box_1: 'Crime1',
+					check_box_2: 'Crime2',
+					check_box_3: 'Crime3',
+					check_box_4: 'Crime4',
+					check_box_5: 'Crime5',
+					check_box_6: 'Crime6',
+				}[$(':checked.check_box').attr('id')];
+				return checked;
+			}
+
+			var layerCheckBox = function (layer){
+				return ({
+					check_box_1: 'Crime1',
+					check_box_2: 'Crime2',
+					check_box_3: 'Crime3',
+					check_box_4: 'Crime4',
+					check_box_5: 'Crime5',
+					check_box_6: 'Crime6',
+				}[layer]);
+			}
+			$("#timeperiod").change(function () {
+				filter(isChecked());
+			});
+			$("#timeofday").change(function () {
+				filter(isChecked());
+			});
+
+
+
+				$('#check_box_1').click(function (w) {
+					$('#check_box_2').removeAttr('checked');
+					$('#check_box_3').removeAttr('checked');
+					$('#check_box_4').removeAttr('checked');
+					$('#check_box_5').removeAttr('checked');
+					$('#check_box_6').removeAttr('checked');
+					if($('#check_box_7').is(':checked')) {
+						choroplethAll('c1');
+						addFeatureLayer(layerCheckBox('check_box_1'));
+					}
+					else
+					{
+						choroplethAll('c1f');
+						removeFeatureLayer(layerCheckBox('check_box_1'))
+					}
+					if (!($('.check_box').is(':checked'))) {
+						choroplethAll();
+						removeFeatureLayer(layerCheckBox('check_box_1'))
+					}
+				})
+				$('#check_box_2').click(function (w) {
+					$('#check_box_1').removeAttr('checked');
+					$('#check_box_3').removeAttr('checked');
+					$('#check_box_4').removeAttr('checked');
+					$('#check_box_5').removeAttr('checked');
+					$('#check_box_6').removeAttr('checked');
+					if($('#check_box_7').is(':checked')) {
+						choroplethAll('c2');
+						addFeatureLayer(layerCheckBox('check_box_2'));
+					}
+					else
+					{
+						choroplethAll('c2f');
+						removeFeatureLayer(layerCheckBox('check_box_2'))
+					}
+					if (!($('.check_box').is(':checked'))) {
+						choroplethAll();
+						removeFeatureLayer(layerCheckBox('check_box_2'))
+					}
+				})
+				$('#check_box_3').click(function (w) {
+					$('#check_box_2').removeAttr('checked');
+					$('#check_box_1').removeAttr('checked');
+					$('#check_box_4').removeAttr('checked');
+					$('#check_box_5').removeAttr('checked');
+					$('#check_box_6').removeAttr('checked');
+					if($('#check_box_7').is(':checked')) {
+						choroplethAll('c3');
+						addFeatureLayer(layerCheckBox('check_box_3'));
+					}
+					else
+					{
+						choroplethAll('c3f');
+						removeFeatureLayer(layerCheckBox('check_box_3'))
+					}
+					if (!($('.check_box').is(':checked'))) {
+						choroplethAll();
+						removeFeatureLayer(layerCheckBox('check_box_3'))
+					}
+
+				})
+				$('#check_box_4').click(function (w) {
+					$('#check_box_2').removeAttr('checked');
+					$('#check_box_3').removeAttr('checked');
+					$('#check_box_1').removeAttr('checked');
+					$('#check_box_5').removeAttr('checked');
+					$('#check_box_6').removeAttr('checked');
+					if($('#check_box_7').is(':checked')) {
+						choroplethAll('c4');
+						addFeatureLayer(layerCheckBox('check_box_4'));
+					}
+					else
+					{
+						choroplethAll('c4f');
+						removeFeatureLayer(layerCheckBox('check_box_5'))
+
+					}
+
+					if (!($('.check_box').is(':checked')))  {
+						choroplethAll();
+						removeFeatureLayer(layerCheckBox('check_box_4'))
+					}
+
+				})
+				$('#check_box_5').click(function (w) {
+					$('#check_box_2').removeAttr('checked');
+					$('#check_box_3').removeAttr('checked');
+					$('#check_box_4').removeAttr('checked');
+					$('#check_box_1').removeAttr('checked');
+					$('#check_box_6').removeAttr('checked');
+					if($('#check_box_7').is(':checked')) {
+						choroplethAll('c5');
+						addFeatureLayer(layerCheckBox('check_box_5'));
+					}
+					else
+					{
+						choroplethAll('c5f');
+						removeFeatureLayer(layerCheckBox('check_box_5'))
+					}
+					if (!($('.check_box').is(':checked'))) {
+						choroplethAll();
+						removeFeatureLayer(layerCheckBox('check_box_5'))
+					}
+
+				})
+				$('#check_box_6').click(function (w) {
+					$('#check_box_2').removeAttr('checked');
+					$('#check_box_3').removeAttr('checked');
+					$('#check_box_4').removeAttr('checked');
+					$('#check_box_5').removeAttr('checked');
+					$('#check_box_1').removeAttr('checked');
+					if($('#check_box_7').is(':checked')) {
+						choroplethAll('c6');
+						addFeatureLayer(layerCheckBox('check_box_6'));
+					}
+					else
+					{
+						choroplethAll('c6f');
+						removeFeatureLayer(layerCheckBox('check_box_6'))
+					}
+					if (!($('.check_box').is(':checked')))  {
+						choroplethAll();
+						removeFeatureLayer(layerCheckBox('check_box_6'))
+					}
+
+				})
+
+			$('#check_box_7').click(function (w) {
+				$('#check_box_8').removeAttr('checked');
+				$('#timeperiod').removeAttr('disabled');
+				$('#timeofday').removeAttr('disabled');
+				if($('#check_box_1').is(':checked')) {
+					choroplethAll('c1');
+					addFeatureLayer(layerCheckBox('check_box_1'));
+
+				}
+				if($('#check_box_2').is(':checked')) {
+					choroplethAll('c2');
+					addFeatureLayer(layerCheckBox('check_box_2'));
+
+				}
+				if($('#check_box_3').is(':checked')) {
+					choroplethAll('c3');
+					addFeatureLayer(layerCheckBox('check_box_3'));
+
+				}
+				if($('#check_box_4').is(':checked')) {
+					choroplethAll('c4');
+					addFeatureLayer(layerCheckBox('check_box_4'));
+
+				}
+				if($('#check_box_5').is(':checked')) {
+					choroplethAll('c5');
+					addFeatureLayer(layerCheckBox('check_box_5'));
+
+				}
+				if($('#check_box_6').is(':checked')) {
+					choroplethAll('pop');
+					addFeatureLayer(layerCheckBox('check_box_6'));
+
+				}
+			});
+			$('#check_box_8').click(function (w) {
+				$('#check_box_7').removeAttr('checked');
+				document.getElementById("timeperiod").value = "All Time"
+				document.getElementById("timeofday").value = "All Day"
+				$('#timeofday').attr('disabled', true);
+				$('#timeperiod').attr('disabled', true);
+				if($('#check_box_1').is(':checked')) {
+					choroplethAll('c1f');
+					removeFeatureLayer(layerCheckBox('check_box_1'))
+				}
+				if($('#check_box_2').is(':checked')) {
+					choroplethAll('c2f');
+					removeFeatureLayer(layerCheckBox('check_box_2'))
+
+				}
+				if($('#check_box_3').is(':checked')) {
+					choroplethAll('c3f');
+					removeFeatureLayer(layerCheckBox('check_box_3'))
+
+				}
+				if($('#check_box_4').is(':checked')) {
+					choroplethAll('c4f');
+					removeFeatureLayer(layerCheckBox('check_box_4'))
+
+				}
+				if($('#check_box_5').is(':checked')) {
+					choroplethAll('c5f');
+					removeFeatureLayer(layerCheckBox('check_box_5'))
+
+				}
+				if($('#check_box_6').is(':checked')) {
+					choroplethAll('c6f');
+					removeFeatureLayer(layerCheckBox('check_box_6'))
+				}
+			});
+
+
+		});
+
+
+
+
+
+

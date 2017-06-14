@@ -1,0 +1,50 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.iiitb.egov"
+        minSdkVersion 21
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+def SUPPORT_LIBRARY_VERSION = "25.3.0"
+def EASY_PERMISSIONS_VERSION = "0.2.1"
+def BUTTER_KNIFE_VERSION = "8.4.0"
+def GLIDE_LIBRARY = "3.7.0"
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    // Android Support Library
+    compile "com.android.support:design:25.3.1"
+    compile "com.android.support:appcompat-v7:25.3.1"
+    compile 'com.google.firebase:firebase-storage:10.2.1'
+    testCompile 'junit:junit:4.12'
+    // Permission Library
+    compile "pub.devrel:easypermissions:$EASY_PERMISSIONS_VERSION"
+    // Field and method binding for Android views
+    compile "com.jakewharton:butterknife:$BUTTER_KNIFE_VERSION"
+    apt "com.jakewharton:butterknife-compiler:$BUTTER_KNIFE_VERSION"
+    // Image Loading library
+    compile "com.github.bumptech.glide:glide:$GLIDE_LIBRARY"
+    compile 'com.loopj.android:android-async-http:1.4.9'
+    // Google Location Api
+    compile "com.google.android.gms:play-services-location:10.2.1"
+}
+
+apply plugin: 'com.google.gms.google-services'

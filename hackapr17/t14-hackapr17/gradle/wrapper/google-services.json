@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "387307677456",
+    "firebase_url": "https://egov-88ee3.firebaseio.com",
+    "project_id": "egov-88ee3",
+    "storage_bucket": "egov-88ee3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:387307677456:android:e4519fe4996ec218",
+        "android_client_info": {
+          "package_name": "com.example.ln_202.firebasestorage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "387307677456-ps1mr425b278amts6a3g9478cenppmfc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ln_202.firebasestorage",
+            "certificate_hash": "0079b5cbd68fbe565b3920c9830f16934e4f1e2e"
+          }
+        },
+        {
+          "client_id": "387307677456-9k20oudae67s3dmp4kghlneimmfo0h4v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9YqqxGB_MrrHqwwWuSjD6jHsuOL8kl-U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "387307677456-9k20oudae67s3dmp4kghlneimmfo0h4v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

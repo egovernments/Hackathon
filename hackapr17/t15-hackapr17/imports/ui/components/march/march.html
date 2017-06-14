@@ -1,0 +1,63 @@
+<div ng-show=isNavBar() class="navbar-fixed">
+    <nav>
+        <div class="nav-wrapper light-blue darken-3">
+            <div class="container">
+                <div class="center-align center hide-on-med-and-up">
+                    <a ui-sref="march.login" class="brand-logo" ng-click="setActive('march.login')"><img id="header-logo" class="responsive-img" src="logo_white.png" style="height: 75%; width: 75%"></a>
+                </div>
+                <a ui-sref="march.login" class="brand-logo hide-on-small-only" ng-click="setActive('march.login')"><img id="header-logo" class="responsive-img" src="logo_white.png"></a>
+                <a style="color: white" href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons" style="font-size: 24px">menu</i></a>
+                <!--for large devices only-->
+                <ul class="right hide-on-med-and-down">
+                    <li ng-class="{'active':isActive('march.analytics')}" ng-click="setActive('march.analytics'); march.goToState('march.analytics')">
+                        <a style="color: white">Analytics</a>
+                    </li>
+                </ul>
+                <ul class="right hide-on-med-and-down">
+                    <li ng-class="{'active':isActive('march.home')}" ng-click="setActive('march.home');  march.goToState('march.home')">
+                        <a style="color: white">Home</a>
+                    </li>
+                </ul>
+                <!--for small and medium devices only-->
+                <ul class="side-nav" id="mobile-demo">
+                    <li ng-class="{'active':isActive('march.userProfile.voted')}" ng-click="march.goToState('march.userProfile.voted')">
+                        <div class="userView">
+                            <div class="background">
+                                <img src="background-navbar.jpg" style="width: 240px; height: 160px">
+                            </div>
+                            <a href=""><span class="white-text name title" style="font-size: large">EGovernment Hackathon</span></a>
+                            <a href=""><span class="white-text email">Case 3</span></a>
+                        </div>
+                    </li>
+                    <li ng-class="{'active':isActive('march.home')}" ng-click="march.goToState('march.home')">
+                        <a style="color: #0277bd">Home</a>
+                    </li>
+                    <li ng-class="{'active':isActive('march.analytics')}" ng-click="march.goToState('march.analytics')">
+                        <a style="color: #0277bd">Analytics</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<!-- <div ng-if="march.loading">
+    <div class="load-bar">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+</div> -->
+
+<div style="height:6px" ng-if="!march.loading" ng-show="isNavBar()">
+</div>
+
+<div ng-if="!isStateChanging" ui-view="menuContent"></div>
+<div ng-if="isStateChanging">
+    <div style="width: 100px;height: 100px;top:50%;left: 50%;position: absolute">
+        <div class="spinner-cube">
+            <div class="cube1"></div>
+            <div class="cube2"></div>
+        </div>
+    </div>
+</div>

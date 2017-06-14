@@ -1,0 +1,193 @@
+extends layout
+
+block scripts
+
+	script(src="/javascripts/leaflet.js")
+	//script(src='/jquery-ui.js')
+	script(src='/javascripts/jquery-ui.js')
+
+	link(rel='stylesheet', href='/stylesheets/jquery-ui.min.css')
+	link(rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css")
+	link(rel='stylesheet', href='/stylesheets/style.css')
+
+
+block scripts2
+	script(src="/javascripts/map.public.js")
+	script(src='/javascripts/leaflet.markercluster.js')
+	script(src="/javascripts/chroma.min.js")
+	script(src="/javascripts/leaflet.awesome-markers.min.js")
+	link(rel='stylesheet', href='/stylesheets/leaflet.awesome-markers.css')
+	link(href='/stylesheets/MarkerCluster.css' rel='stylesheet')
+
+
+block icon
+	li(class="uk-navbar-nav"): a()
+		.search
+			form(action="/localities/1", class="uk-search1" name='SearchForm', data-uk-search="{source:'../auto/', method:'get', minLength:2, delay:200}")
+				input#SearchForm(class="uk-search-field1" type='text', name='s', maxlength='64', placeholder='Search')
+				.srch_btn(onclick='SearchForm.submit()')
+					i.fa.fa-search
+
+
+block map
+	div(style="width=100%")
+		div(class="uk-grid uk-grid-small" id="themap" style="width=80%;float:left")
+			div(class="uk-width-4-4")
+				#map()
+
+		div(id="thecontrols" style="background-color:#F2EFE9;width=20%;float:left;position:relative")
+			p(style="color:#ffad33; padding-top:1cm; padding-left:1cm")
+				font(size=3) Crime Type
+			div(class="thecrimetype")
+				div(id="thebuttons_row1")
+					label
+						input(type='checkbox'  class='check_box' id='check_box_1')
+						| CRIME1 &nbsp
+					label
+						input(type='checkbox'  class='check_box' id='check_box_2')
+						| CRIME2 &nbsp
+					label
+						input(type='checkbox'  class='check_box' id='check_box_3')
+						| CRIME3 &nbsp
+				div(id="thebuttons_row2")
+					label
+						input(type='checkbox'  class='check_box' id='check_box_4')
+						| CRIME4 &nbsp
+					label
+						input(type='checkbox'  class='check_box' id='check_box_5')
+						| CRIME5 &nbsp
+					label
+						input(type='checkbox'  class='check_box' id='check_box_6')
+						| CRIME6 &nbsp
+
+
+	script.
+
+		function popup(mylink, windowname) {
+			if (!window.focus)return true;
+			var href;
+			if (typeof(mylink) == 'string')
+				href = mylink;
+			else
+				var val = "/chart/";
+				var name = $(".box_pop_apt_no").text().split(' ')[2];
+				href = val+name;
+			window.open(href, windowname, 'width=680,height=450,left=450,top=200,resizable=yes,location=no,');
+			return false;
+		}
+
+
+		document.addEventListener("DOMContentLoaded", function (event) {
+			//do work
+			alert("here");
+			map = init(!{attributes});
+			layerLoad('Ward', function(layer){/*do nothing*/}); //load ward early
+
+			map.on('zoomend', function () {
+				if (map.getZoom() > 13 && map.getZoom() < 15 && map.hasLayer(map.layers['Ward'])) {
+					$("#ward_info").show();
+					map.closePopup();
+				}
+				if (map.getZoom() <= 13 || map.getZoom() >= 15)
+				{
+					$("#ward_info").hide();
+				}
+			});
+			map.on('popupopen', function(evt) {
+				var currentPopup = evt.popup;
+				if (map.getZoom() > 13 && map.getZoom() < 15 && map.hasLayer(map.layers['Ward'])) {
+					//$("#ward_info").show();
+					//map.closePopup();
+				}
+
+				$('.close_popup').click(function(e){
+
+					if (currentPopup != null)currentPopup._source.closePopup();
+				});
+				$('.popout').click(function(e){
+					if (currentPopup != null)currentPopup._source.closePopup();
+
+					var htmlContent = e.target.parentElement.parentElement.children
+					//var.replace(/[^0-9\.]+/g, '');
+
+					//$('#box_pop').html(currentPopup.getContent())
+					var htmlL = htmlContent.length;
+					$('.box_pop_apt_no').html(htmlContent[3]);
+					$('#box_pop_gv').html(htmlContent[htmlL-6].innerHTML.replace(/[^0-9\.]+/g, ''));
+					$('#box_pop_mv').html(htmlContent[htmlL-5].innerHTML.replace(/[^0-9\.]+/g, ''));
+					$('#box_pop_lv').html(htmlContent[htmlL-4].innerHTML.replace(/[^0-9\.]+/g, ''));
+					$('#box_pop_rv').html(htmlContent[htmlL-3].innerHTML.replace(/[^0-9\.]+/g, ''));
+
+					$("#stack").show();
+					$("#box_pop").show();
+				});
+			});
+			$(window).on("resize", function () {
+			$("#map").height($(window).height() / 1.25).width($('#themap').width());
+			map.invalidateSize();
+			}).trigger("resize");
+
+			//UI functions
+
+			$(function() {
+				$( "#check1" ).button();
+				$( "#check2" ).button();
+				$( "#check3" ).button();
+			});
+			
+			
+			$('.check_box').change(function(a){
+
+				var layerCheckBox = function (layer){
+					return ({
+						check_box_Ward: 'Ward',
+						check_box_SRO: 'SRO',
+						check_box_DRO: 'DRO',
+						check3: 'Apartments',
+						schools: 'Landmarks-schools',
+						major_bus_stands: 'Landmarks-majorbus',
+						metro_stations: 'Landmarks-metrostation',
+						it_parks: 'Landmarks-itparks'
+
+					}[layer]);
+				}
+
+				if ($('#'+a.target.id).attr('checked') != 'checked') {
+					var id = a.target.id;
+					$('#'+id).attr('checked',true)
+					//add the layer
+					addFeatureLayer(layerCheckBox(id));
+
+				}else{
+					var id = a.target.id;
+					$('#'+id).attr('checked',false)
+					//remove the layer
+
+					removeFeatureLayer(layerCheckBox(id))
+				}
+			});
+
+			$(function() {
+				//apartment slider
+				$( "#slider-range" ).slider({
+					change: filter,
+					range: true,
+					min: 0,
+					max: 20000,
+					values: [ 0, 20000 ],
+					slide: function( event, ui ) {
+						$( "#amount" ).val( "₹" + ui.values[ 0 ] + " - ₹" + ui.values[ 1 ] );
+					}
+				});
+				$( "#amount" ).val( "₹" + $( "#slider-range" ).slider( "values", 0 ) +
+						" - ₹" + $( "#slider-range" ).slider( "values", 1 ) );
+			});
+
+			$('.property_values').change(function(){filter()});
+		});
+
+
+
+
+
+

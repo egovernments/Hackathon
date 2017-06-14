@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- HTML5 Metadata -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Apple Mobile Favicons -->
+    <link rel="apple-touch-startup-image" href="startup.png">
+    <link rel="apple-touch-icon" href="assets/images/logos/nagariya-logo.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="128x128" href="assets/images/logos/nagariya-logo.png">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" sizes="256x256" href="assets/images/logos/nagariya-logo.png">
+
+    <title>Nagariya</title>
+
+    <!-- Normalize.css -->
+    <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
+
+    <!-- Materialize CSS -->
+    <link rel="stylesheet" href="node_modules/materialize-css/dist/css/materialize.min.css">
+
+    <!-- Google Material Icon Font -->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Google Web Fonts: Open Sans -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <style> body { font-family: 'Open Sans', sans-serif; } </style>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/google-button.css">
+  </head>
+
+  <body ng-app="nagariyaApp">
+
+    <header>
+      <nav>
+        <div class="nav-wrapper green">
+          <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
+
+           <a href="#home" class="brand-logo center">
+             <img class="nagariya-nav-logo" src="assets/images/logos/nagariya-white-text-logo.png" height="42px" alt="">
+           </a>
+
+          <ul id="nav-mobile" class="right">
+            <li><a href="#login"><i class="material-icons">lock</i></a></li>
+            <li><a href="#profile"><i class="material-icons">perm_identity</i></a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <ul id="slide-out" class="side-nav">
+        <li><div class="userView">
+          <div class="background">
+            <img src="assets/images/taj-mahal.jpg" height="100%">
+          </div>
+          <img class="circle" src="{{ loggedUser.photoURL }}">
+          <span class="white-text name">{{ loggedUser.displayName }}</span>
+          <span class="white-text email">{{ loggedUser.email }}</span>
+        </div></li>
+        <li><a href="#!"><i class="material-icons">perm_identity</i>Login</a></li>
+        <li><div class="divider"></div></li>
+        <li><a class="subheader">Contact</a></li>
+        <li><a class="waves-effect" href="#!"><i class="material-icons">phone</i>Call Us</a></li>
+        <li><a class="waves-effect" href="#!"><i class="material-icons">mail</i>Email Us</a></li>
+      </ul>
+    </header>
+
+    <main>
+      <div ng-view></div>
+    </main>
+
+    <footer class="page-footer green darken-2">
+      <div class="footer-copyright green">
+        <div class="container center">&copy; 2017 Nagariya. Developed by NEST.</div>
+      </div>
+    </footer>
+
+     <!-- Javascript -->
+     <!-- jQuery -->
+     <script src="node_modules/jquery/dist/jquery.min.js" charset="utf-8"></script>
+
+     <!-- Materialize -->
+     <script src="node_modules/materialize-css/dist/js/materialize.min.js" charset="utf-8"></script>
+
+     <!-- AngularJS & Angular Route -->
+     <script src="node_modules/angular/angular.min.js" charset="utf-8"></script>
+     <script src="node_modules/angular-route/angular-route.min.js" charset="utf-8"></script>
+
+     <!-- AngularFire -->
+     <script src="node_modules/angularfire/dist/angularfire.min.js"></script>
+
+     <!-- Firebase -->
+     <script src="node_modules/firebase/firebase.js" charset="utf-8"></script>
+
+     <!-- Initialize Firebase -->
+     <script>
+       var config = {
+         apiKey: "AIzaSyDEo43aFELDxuE_HkZ2WhYLX6adXwdRB8A",
+         authDomain: "nagariya-76d80.firebaseapp.com",
+         databaseURL: "https://nagariya-76d80.firebaseio.com",
+         projectId: "nagariya-76d80",
+         storageBucket: "nagariya-76d80.appspot.com",
+         messagingSenderId: "195748617342"
+       };
+       firebase.initializeApp(config);
+     </script>
+
+     <!-- Custom JS & CSS -->
+     <script src="app.js" charset="utf-8"></script>
+  </body>
+</html>

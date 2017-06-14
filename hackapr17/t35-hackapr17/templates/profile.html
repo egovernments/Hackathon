@@ -1,0 +1,39 @@
+<div ng-controller="ProfileController">
+  <p>&nbsp;</p>
+
+  <div class="container">
+    <div>
+      <div class="center">
+        <img class="circle" src="{{ loggedUser.photoURL }}" width="72px" height="72px">
+        <h4>{{ loggedUser.displayName }}</h4>
+        <p>{{ loggedUser.email }}</p>
+      </div>
+
+      <p>&nbsp;</p>
+
+      <div class="row">
+        <div class="col m4">
+          <div class="card-panel blue-grey center">
+            <h3 id="spot_fixes" class="white-text">16</h3>
+            <h5 class="white-text">Spot Fixes</h5>
+          </div>
+        </div>
+
+        <div class="col m4">
+          <div class="card-panel blue-grey darken-2 center">
+            <h3 id="complaints" class="white-text">32</h3>
+            <h5 class="white-text">Complaints</h5>
+          </div>
+        </div>
+
+        <div class="col m4">
+          <div class="card-panel blue-grey darken-4 center">
+            <h3 id="points" class="white-text">52</h3>
+            <h5 class="white-text">Points</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

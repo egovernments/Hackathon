@@ -1,0 +1,10 @@
+import '../imports/api/users';
+import '../imports/api/areas';
+import '../imports/api/complaints';
+import '../imports/api/zones';
+import '../imports/api/streets';
+import '../imports/api/types';
+import '../imports/api/localities';
+import '../imports/api/wards';
+import '../imports/api/masters';
+import '../imports/api/results';

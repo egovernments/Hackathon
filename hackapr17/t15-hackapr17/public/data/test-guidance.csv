@@ -1,0 +1,11 @@
+zone,ward,area,locality,street,usage,value
+N09,N113,T.Nagar,T.Nagar,Vidyodaya Ii Cross Street,Non-Residential,4.5
+N09,N113,T.Nagar,T.Nagar,Vidyodaya Ii Cross Street,Residential,1.25
+N05,N059,Central,Central,V P Hall Compounds,Non-Residential,4.8
+N05,N059,Central,Central,V P Hall Compounds,Residential,0.8
+N08,N100,Anna Nagar,Y Block,Y Block 3rd Street,Non-Residential,6
+N08,N100,Anna Nagar,Y Block,Y Block 3rd Street,Residential,1.25
+N10,N139,Jafferkhanpet,Jafferkhanpet,S.V.Chidambaram Salai,Non-Residential,3
+N10,N139,Jafferkhanpet,Jafferkhanpet,S.V.Chidambaram Salai,Residential,0.75
+N11,N149,Virugambakkam,Alwarthirunagar Annexe,School View Street 2 - Alwarthirunagar Annexe,Non-Residential,3
+N11,N149,Virugambakkam,Alwarthirunagar Annexe,School View Street 2 - Alwarthirunagar Annexe,Residential,0.8

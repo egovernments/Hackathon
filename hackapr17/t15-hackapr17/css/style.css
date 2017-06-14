@@ -1,0 +1,191 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Lato', sans-serif
+}
+.login-background {
+  background: url(background-login.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+.login-buttons {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+.table-button {
+  width: 100%;
+}
+.scrape {
+  border-top: 1px solid #e1e2e3;
+  border-bottom: 1px solid #e1e2e3;
+  border-left: 1px solid #e1e2e3;
+  border-right: 1px solid #e1e2e3;
+  border-radius: 5px;
+  background-color: #f6f7f9;
+  padding: 1%;
+}
+.img-zoom {
+  overflow: hidden;
+  position: relative;
+  height: 290px;
+}
+.img-zoom img {
+  max-width: 100%;
+  min-width: 100%;
+  min-height: 100%;
+}
+.img-zoom-mobile {
+  overflow: hidden;
+  position: relative;
+  height: 200px;
+}
+.img-zoom-mobile img {
+  max-width: 100%;
+  min-width: 100%;
+  min-height: 100%;
+}
+.issue-image-container {
+  background-color: #000000;
+}
+.issue-image-container img {
+  opacity: 0.7;
+}
+article {
+  width: 45%;
+  margin-bottom: 1em;
+  background: #f6f7f9;
+  border-radius: 5px;
+  border-top: 1px solid #e1e2e3;
+  border-bottom: 1px solid #e1e2e3;
+  border-left: 1px solid #e1e2e3;
+  border-right: 1px solid #e1e2e3;
+  padding: 1%;
+}
+.article-left {
+  float: left;
+}
+.article-right {
+  float: right;
+}
+@media all and (max-width: 900px) {
+  article {
+    width: 80%;
+    margin: 20px 10%;
+    padding: 1%;
+  }
+}
+
+/*image crop*/
+
+.cropArea {
+  background: #E4E4E4;
+  overflow: hidden;
+  position: relative;
+  left: 50%;
+  margin-left: -75px;
+  width: 150px;
+  height: 150px;
+}
+.cropArea.big {
+  width: 800px;
+  height: 600px;
+}
+.cropArea.medium {
+  width: 500px;
+  height: 350px;
+}
+.cropArea.small {
+  width: 300px;
+  height: 200px;
+}
+
+/*notifications animation for top 100%*/
+
+#growNotification {
+  -moz-transition: height .5s;
+  -ms-transition: height .5s;
+  -o-transition: height .5s;
+  -webkit-transition: height .5s;
+  transition: height .5s;
+  height: 0;
+  overflow-y: scroll;
+}
+.yourmarch-notification {
+  max-height: 400px;
+  overflow-y: scroll;
+  position: fixed;
+  z-index: 888;
+  background-color: white;
+  top: 64px;
+  width: 100%
+}
+@media only screen and (max-width: 600px) {
+  .yourmarch-notification {
+    max-height: 400px;
+    overflow-y: scroll;
+    position: fixed;
+    z-index: 888;
+    background-color: white;
+    top: 56px;
+    width: 100%
+  }
+}
+a {
+  color: #0277bd;
+}
+p {
+  word-wrap: break-word;
+}
+.outline {
+  color: white;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.truncate-box {
+  display: block;
+  display: -webkit-box;
+  margin: 0 auto;
+  font-size: small;
+  line-height: 1.4;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.circular-portrait {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.circular-portrait img {
+  width: 100%;
+  height: auto;
+}
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+.shake {
+  -webkit-animation-name: shake;
+  -webkit-animation-duration: 0.8s;
+  -webkit-transform-origin: 50% 50%;
+  -webkit-animation-iteration-count: 5;
+  -webkit-animation-timing-function: linear;
+}
+.hover-underline:hover {
+  text-decoration: underline;
+}
